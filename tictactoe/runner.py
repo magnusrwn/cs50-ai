@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import math
 
 import tictactoe as ttt
 
@@ -112,7 +113,7 @@ while True:
         if user != player and not game_over:
             if ai_turn:
                 time.sleep(0.5)
-                move = ttt.minimax(board, 8, player, 0, 0)
+                move, _ = ttt.minimax(board, 10, player, -math.inf, math.inf)
                 board = ttt.result(board, move)
                 ai_turn = False
             else:

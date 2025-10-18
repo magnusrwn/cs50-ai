@@ -37,24 +37,22 @@ def actions(board):
     possible_actions = set()
     for i, row in enumerate(board):
         for j, item in enumerate(row):
-            if board[i][j] == EMPTY: possible_actions.add((i, j))
+            if item == EMPTY:
+                possible_actions.add((i, j))
     return possible_actions if len(possible_actions) != 0 else None
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    player_ = player(board)
     i = action[0]
     j = action[1]
-    # if i not in vals or j not in vals:
-        # print(i, j)
-        # raise ValueError('i, or j were greater than 3, which is out of the boards indecies')
     b_copy = deepcopy(board)
-    b_copy[i][j] = player_
+    print(b_copy)
+    print(action)
+    b_copy[i][j] = player(board)
 
     return b_copy
-# logic err
 
 def winner(board):
     """
@@ -103,7 +101,7 @@ def minimax(board, depth, maximising_player, alpha, beta):
             alpha = max(alpha, eval)
             if beta <= alpha:
                 break
-        return best_move
+        return best_move, max_eval
     else:
         min_eval = math.inf
         for action in actions(board):
@@ -111,10 +109,10 @@ def minimax(board, depth, maximising_player, alpha, beta):
             if eval < min_eval:
                 best_move = action
                 min_eval = eval
-            beta = min(alpha, eval)
+            beta = min(beta, eval)
             if beta <= alpha:
                 break
-        return best_move
+        return best_move, min_eval
         
 
 def is_row_win(board):
