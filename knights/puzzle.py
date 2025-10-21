@@ -24,8 +24,8 @@ gen_kb = And(
 # A says "I am both a knight and a knave."
 knowledge0 = And(
     gen_kb,
-    (Implication(AKnight, And(AKnight, AKnave))),
-    (Implication(AKnave, Not(And(AKnight, AKnave))))
+    Implication(AKnight, And(AKnight, AKnave)),
+    Implication(AKnave, Not(And(AKnight, AKnave)))
 )
 
 # Puzzle 1
@@ -34,7 +34,7 @@ knowledge0 = And(
 knowledge1 = And(
     gen_kb,
     Implication(AKnight, And(AKnave, BKnave)),
-    Implication(AKnave, Not(And(AKnave, BKnave))),
+    Implication(AKnave, Not(And(AKnave, BKnave)))
 )
 
 # Puzzle 2
@@ -44,8 +44,8 @@ knowledge2 = And(
     gen_kb,
     Implication(AKnight, And(AKnight, BKnight)),
     Implication(AKnave, Not(And(AKnight, BKnight))),
-    Implication(BKnight, Not(And(AKnight, BKnight))),
-    Implication(BKnave, And(AKnight, BKnight))
+    Implication(BKnight, And(BKnight, AKnave)),
+    Implication(BKnave, And(BKnight, AKnight))
 )
 
 # Puzzle 3
@@ -58,13 +58,13 @@ knowledge3 = And(
     Implication(AKnight, Or(AKnight, AKnave)),
     Implication(AKnave, Not(Or(AKnight, AKnave))),
 
-    Implication(BKnight, Implication(AKnight, BKnave)),
-    Implication(BKnave, Implication(AKnave, Not(BKnave))),
+    Implication(BKnight, Implication(AKnight, AKnave)),
+    Implication(BKnave, Implication(AKnave, Not(AKnight))),
     Implication(BKnight, CKnave),
     Implication(BKnave, Not(CKnave)),
 
     Implication(CKnight, AKnight),
-    Implication(CKnave, BKnight)
+    Implication(CKnave, AKnave)
 )
 
 
