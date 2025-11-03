@@ -190,48 +190,78 @@ class MinesweeperAI():
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
+        # NOTE: MOST LIKELY ERRS HERE ARE USES OF MOTHODS... as opposed to logical/ large scale logical
         # mark the move made
-        self.moves_made(cell)
+        self.moves_made.add(cell)
         
-        # mark the cell as safe
+        # mark as safe
         self.mark_safe(cell)
 
-        # update all sentences that have the cell in it to remove it
+    # PREPING FOR EVALUATIONS (removing the selected cell, createing a set of neighbours, forming and addin the sentence to the kb)
+        # update all sentences that have the cell in it to remove it (as it is safe if gotten this far)
         for k in self.knowledge:
-            # check if the cell is in the sentences cells set
             if cell in k.cells:
                 k.cells.remove(cell)
 
-
         # find neighbours
-        cells = set()
+        n_cells = set()
         for i in range(cell[0] - 1, cell[0] + 2):
             
             # check if the height is within board limits to ensure no redundant loops
-            if i >= 0 and i <= self.height:
+            if i >= 0 and i < self.height:
 
                 # itterating for width    
                 for j in range(cell[1] - 1, cell[1] + 2):
                     
                     # ensuring width is within the grid
-                    if j >= 0 and i <= self.width:
+                    if j >= 0 and j < self.width:
+                        # of it is the cell in question, skip it... as we cant have that as part of the sentence
+                        if (i, j) == cell:
+                            continue
                     
-                        # add the cell to the set
-                        cells.add((i, j))
+                        # add the cell to the set if it's known to not be a mine, or b safe
+                        if (i, j) in self.safes or (i, j) in self.mines:
+                            continue
+
+                        n_cells.add((i, j))
                 
-        # add sentence
-        self.knowledge(Sentence(cells, count))
+        # create the sentence of neighbours
+        s = Sentence(n_cells, count)
+        # adding the sentence to the kb
+        self.knowledge.append(s)
 
-        # MARK ANY AS SAFE OR AS MINES HERE
-        # itterate the sentences again to see if any have equal cell and counts
-        for k in self.knowledge:
-            mines = k.known_mines()
-            if k.
-                for cell in k.cells:
-                    # add it to the ai's link of mines
-                    self.mark_mine(cell)
 
-                    k.
+    # EVALUATION OF THE SENTENCES IN THE, AND DRAWING CONCLUSIONS
+        # itterating all sentences in kb
+        for s in self.knowledge: # sentence in kb
+            # if the len of the sentence is equal to the count of the mines, then they are all mines...
+            if len(s.cells) == s.count: # if they are mines
+                for c in s.cells:
+                    # marking as mines
+                    self.mark_mine(c)
+            
+            if s.count == 0:
+                # mark things as safe...
+                for c in s.cells:
+                    self.mark_safe(c)
+        
+        # check if s1 subSet of s2... if is, then s3 = s2 - s1... etc...
+        # O(n)^2 
+        # Pseudocode ok
+        for i1, s1 in enumerate(self.knowledge):
+            for i2, s2 in enumerate(self.knowledge):
+                if s1.cells <= s2.cells and s1.cells != s2.cells:
+                    s3cells = s2.cells - s1.cells
+                    s3count = s2.count - s1.count
+                    
+                    # create new sentence
+                    s3 = Sentence(s3cells, s3count)
+
+                    # rempve old ones
+                    
+
+                    self.knowledge.append(s3)
+
 
 
         
